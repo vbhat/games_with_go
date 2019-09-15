@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 )
 
@@ -11,12 +12,14 @@ func main() {
 
 	low := 1
 	high := 100
+	tries := 0
 
 	fmt.Println("Guess a number between ", low, "and ", high)
 	fmt.Println("Press ENTER when you're ready")
 	scanner.Scan()
 
 	for {
+		tries++
 		guess := (high + low) / 2
 		fmt.Println("I guess the number is ", guess)
 		fmt.Println("Is that :")
@@ -32,9 +35,15 @@ func main() {
 			low = guess + 1
 		} else if response == "c" {
 			fmt.Println("Yay!! I got it right!")
+			fmt.Println("It took me ", tries, "tries to get it right")
 			break
 		} else {
 			fmt.Println("Please enter a valid response")
+		}
+
+		if tries > int(math.Log2(float64(high))) {
+			fmt.Println("Your guess is out of bounds or you missed the answer")
+			break
 		}
 
 		// switch response {
