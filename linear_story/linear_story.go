@@ -7,20 +7,38 @@ type storyPage struct {
 	nextPage *storyPage
 }
 
-func tellStory(page *storyPage) {
-	if page == nil {
-		return
+// func playStory(page *storyPage) {
+// 	for page != nil {
+// 		fmt.Println(page.text)
+// 		page = page.nextPage
+// 	}
+// }
+
+func (page *storyPage) playStory() {
+	for page != nil {
+		fmt.Println(page.text)
+		page = page.nextPage
 	}
-	fmt.Println(page.text)
-	tellStory(page.nextPage)
 }
 
-func insertPage(prevP *storyPage, text string) {
-	newPage := storyPage{text, prevP.nextPage}
-	prevP.nextPage = &newPage
+func (page *storyPage) addToEnd(text string) {
+	for page.nextPage != nil {
+		page = page.nextPage
+	}
+	page.nextPage = &storyPage{text, nil}
 }
 
-func deletePage(startPage, page *storyPage) {
+func (page *storyPage) addAfter(text string) {
+	newPage := &storyPage{text, page.nextPage}
+	page.nextPage = newPage
+}
+
+// func insertPage(prevP *storyPage, text string) {
+// 	newPage := storyPage{text, prevP.nextPage}
+// 	prevP.nextPage = &newPage
+// }
+
+func deletePageRecursive(startPage, page *storyPage) {
 	if startPage == nil || page == nil {
 		return
 	}
@@ -28,23 +46,18 @@ func deletePage(startPage, page *storyPage) {
 		startPage.nextPage = page.nextPage
 		return
 	}
-	deletePage(startPage.nextPage, page)
+	deletePageRecursive(startPage.nextPage, page)
 }
 
 func main() {
 	page1 := storyPage{"It is a dark and stormy night", nil}
-	page2 := storyPage{"Your mission is to find the sacred helmet before the bad guys do", nil}
-	page3 := storyPage{"You see a troll ahead", nil}
+	page1.addToEnd("Your mission is to find the sacred helmet before the bad guys do")
+	page1.addToEnd("You see a troll ahead")
 
-	page1.nextPage = &page2
-	page2.nextPage = &page3
+	// insertPage(&page3, "What will you do now?")
 
-	insertPage(&page3, "What will you do now?")
+	page1.addAfter("You are tired and hungry")
 
-	tellStory(&page1)
-
-	deletePage(&page1, &page3)
-
-	tellStory(&page1)
+	page1.playStory()
 
 }
